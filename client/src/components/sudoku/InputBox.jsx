@@ -7,7 +7,7 @@ export default function InputBox({
   return (
     <div
       onClick={onClick}
-      className={`relative border-shade-700 w-12 h-12 group transition-colors items-center justify-center flex rounded-lg select-none ${
+      className={`value-change-blink relative border-shade-700 w-12 h-12 group transition-colors items-center justify-center flex rounded-lg select-none ${
         blocksLeft
           ? 'bg-shade-50 hover:bg-shade-100 cursor-pointer '
           : 'bg-success-400 hover:bg-success-500 cursor-not-allowed'

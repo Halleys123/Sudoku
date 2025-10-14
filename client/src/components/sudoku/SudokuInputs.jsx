@@ -1,14 +1,14 @@
 import InputBox from './InputBox';
 export default function SudokuInputs({ onClick, numbers }) {
   return (
-    <div className='flex flex-row gap-5 items-center justify-center'>
+    <div className='grid grid-cols-3 gap-5 h-fit'>
       {Object.keys(numbers).map((key) => {
         const value = key;
         const blocksLeft = numbers[key];
         return (
           <InputBox
             onClick={() => onClick(value)}
-            key={value}
+            key={`input-box-${value}-${blocksLeft}`}
             number={value}
             blocksLeft={blocksLeft}
           />

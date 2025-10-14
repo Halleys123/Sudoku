@@ -1,6 +1,6 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 // import { useState } from 'react';
 
 const originalSudokuState = [
@@ -41,7 +41,18 @@ export default function SudokuLayout() {
 
   function handleOnClickInput(value) {
     if (selectedCell[0] === -1 || selectedCell[1] === -1) return;
-    if (sudokuState[selectedCell[0]][selectedCell[1]] === value) return;
+    if (sudokuState[selectedCell[0]][selectedCell[1]] === value) {
+      setSudokuState((prev) => {
+        const newState = prev.map((row) => [...row]);
+        newState[selectedCell[0]][selectedCell[1]] = 0;
+        return newState;
+      });
+      setNumbers((prev) => {
+        return { ...prev, [value]: prev[value] + 1 };
+      });
+
+      return;
+    }
     if (numbers[value] === 0) return;
 
     setSudokuState((prev) => {
@@ -56,7 +67,15 @@ export default function SudokuLayout() {
   }
 
   return (
-    <div className='flex flex-col gap-6 items-center'>
+    <div
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key >= '1' && e.key <= '9') {
+          handleOnClickInput(Number(e.key));
+        }
+      }}
+      className='flex flex-row gap-6'
+    >
       <SudokuBox
         onClick={handleMiniBoxClick}
         sudokuState={sudokuState}

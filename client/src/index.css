@@ -65,3 +65,17 @@
   --font-primary: 'Lato', 'Roboto', sans-serif;
   --font-secondary: 'Montserrat', sans-serif;
 }
+
+@keyframes value-change-blink {
+  0%,
+  100% {
+    background-color: white;
+  }
+  50% {
+    background-color: var(--color-primary-200);
+  }
+}
+
+.value-change-blink {
+  animation: value-change-blink 0.4s ease-in-out;
+}
