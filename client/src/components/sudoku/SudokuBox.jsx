@@ -1,27 +1,6 @@
-import { useState } from 'react';
 import MiniBox from '@components/sudoku/MiniBox.jsx';
 
-export default function SudokuBox() {
-  const [sudokuState, setSudokuState] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
-
-  const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
-
-  function handleMiniBoxClick(row, col) {
-    if (row == selectedCell[0] && col == selectedCell[1])
-      setSelectedCell([-1, -1]);
-    else setSelectedCell([row, col]);
-  }
-
+export default function SudokuBox({ onClick, selectedCell, sudokuState }) {
   return (
     <div className='max-w-xl aspect-square rounded-2xl bg-shade-50 grid grid-cols-9 overflow-hidden border border-shade-100'>
       {sudokuState.map((rowData, rowIndex) => {
@@ -32,7 +11,7 @@ export default function SudokuBox() {
               data={cellData}
               row={rowIndex}
               col={cellIndex}
-              onClick={() => handleMiniBoxClick(rowIndex, cellIndex)}
+              onClick={() => onClick(rowIndex, cellIndex)}
               selectedCell={selectedCell}
               style={{
                 borderRight:
