@@ -17,6 +17,17 @@ export default function SudokuLayout() {
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
   ]);
+  const [numbers, setNumbers] = useState({
+    1: 9,
+    2: 9,
+    3: 9,
+    4: 9,
+    5: 9,
+    6: 9,
+    7: 9,
+    8: 9,
+    9: 9,
+  });
 
   function handleMiniBoxClick(row, col) {
     if (row == selectedCell[0] && col == selectedCell[1])
@@ -26,10 +37,16 @@ export default function SudokuLayout() {
 
   function handleOnClickInput(value) {
     if (selectedCell[0] === -1 || selectedCell[1] === -1) return;
+    if (sudokuState[selectedCell[0]][selectedCell[1]] === value) return;
+    if (numbers[value] === 0) return;
+
     setSudokuState((prev) => {
       const newState = prev.map((row) => [...row]);
       newState[selectedCell[0]][selectedCell[1]] = value;
       return newState;
+    });
+    setNumbers((prev) => {
+      return { ...prev, [value]: prev[value] - 1 };
     });
   }
 
@@ -40,7 +57,7 @@ export default function SudokuLayout() {
         sudokuState={sudokuState}
         selectedCell={selectedCell}
       />
-      <SudokuInputs onClick={handleOnClickInput} />
+      <SudokuInputs onClick={handleOnClickInput} numbers={numbers} />
     </div>
   );
 }
