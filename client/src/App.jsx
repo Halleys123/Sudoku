@@ -1,5 +1,7 @@
+import GeneralLayout from '@layouts/GeneralLayout.jsx';
+
 function App() {
-  return <></>;
+  return <GeneralLayout></GeneralLayout>;
 }
 
 export default App;

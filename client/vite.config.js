@@ -14,6 +14,9 @@ export default defineConfig({
         new URL('./src/components', import.meta.url)
       ),
       '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
+      '@hooks': fileURLToPath(new URL('./src/hooks', import.meta.url)),
+      '@providers': fileURLToPath(new URL('./src/providers', import.meta.url)),
+      '@contexts': fileURLToPath(new URL('./src/contexts', import.meta.url)),
     },
   },
 });

@@ -46,3 +46,22 @@
   --color-info-400: #3fc1ee;
   --color-info-500: #329ec4;
 }
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  src: url('/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 100 200 300 400 500 600 700 800 900;
+  src: url('/fonts/Lato-VariableFont_wght.ttf') format('truetype');
+}
+
+@theme {
+  --font-primary: 'Lato', 'Roboto', sans-serif;
+  --font-secondary: 'Montserrat', sans-serif;
+}
