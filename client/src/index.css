@@ -79,3 +79,18 @@
 .value-change-blink {
   animation: value-change-blink 0.4s ease-in-out;
 }
+
+@keyframes message-incoming {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.message-incoming {
+  animation: message-incoming 0.3s ease-in-out;
+}

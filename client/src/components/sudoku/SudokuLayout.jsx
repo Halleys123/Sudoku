@@ -41,6 +41,7 @@ export default function SudokuLayout() {
 
   function handleOnClickInput(value) {
     if (selectedCell[0] === -1 || selectedCell[1] === -1) return;
+    if (originalSudokuState[selectedCell[0]][selectedCell[1]] !== 0) return;
     if (sudokuState[selectedCell[0]][selectedCell[1]] === value) {
       setSudokuState((prev) => {
         const newState = prev.map((row) => [...row]);
@@ -72,6 +73,36 @@ export default function SudokuLayout() {
       onKeyDown={(e) => {
         if (e.key >= '1' && e.key <= '9') {
           handleOnClickInput(Number(e.key));
+        }
+        if (e.key == 'Delete' || e.key == 'Backspace') {
+          handleOnClickInput(0);
+        }
+        if (e.key == 'Escape') {
+          setSelectedCell([-1, -1]);
+        }
+        if (e.key == 'ArrowUp') {
+          setSelectedCell((prev) => {
+            if (prev[0] <= 0) return prev;
+            return [prev[0] - 1, prev[1]];
+          });
+        }
+        if (e.key == 'ArrowDown') {
+          setSelectedCell((prev) => {
+            if (prev[0] >= 8) return prev;
+            return [prev[0] + 1, prev[1]];
+          });
+        }
+        if (e.key == 'ArrowLeft') {
+          setSelectedCell((prev) => {
+            if (prev[1] <= 0) return prev;
+            return [prev[0], prev[1] - 1];
+          });
+        }
+        if (e.key == 'ArrowRight') {
+          setSelectedCell((prev) => {
+            if (prev[1] >= 8) return prev;
+            return [prev[0], prev[1] + 1];
+          });
         }
       }}
       className='flex flex-row gap-6'
