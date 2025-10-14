@@ -4,9 +4,9 @@ import SudokuLayout from '@components/sudoku/SudokuLayout.jsx';
 
 function App() {
   return (
-    <GameLayout>
+    <GeneralLayout>
       <SudokuLayout />
-    </GameLayout>
+    </GeneralLayout>
   );
 }
 

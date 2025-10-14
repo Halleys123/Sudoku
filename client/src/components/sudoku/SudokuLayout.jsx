@@ -1,32 +1,36 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // import { useState } from 'react';
+
+const originalSudokuState = [
+  [5, 3, 0, 0, 7, 0, 0, 0, 0],
+  [6, 0, 0, 1, 9, 5, 0, 0, 0],
+  [0, 9, 8, 0, 0, 0, 0, 6, 0],
+  [8, 0, 0, 0, 6, 0, 0, 0, 3],
+  [4, 0, 0, 8, 0, 3, 0, 0, 1],
+  [7, 0, 0, 0, 2, 0, 0, 0, 6],
+  [0, 6, 0, 0, 0, 0, 2, 8, 0],
+  [0, 0, 0, 4, 1, 9, 0, 0, 5],
+  [0, 0, 0, 0, 8, 0, 0, 7, 9],
+];
 
 export default function SudokuLayout() {
   //   const [mode, setMode] = useState('selection'); // continuous-input | note | selection
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
-  const [sudokuState, setSudokuState] = useState([
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  ]);
+  const [sudokuState, setSudokuState] = useState(
+    originalSudokuState.map((row) => [...row])
+  );
   const [numbers, setNumbers] = useState({
-    1: 9,
-    2: 9,
-    3: 9,
-    4: 9,
-    5: 9,
-    6: 9,
-    7: 9,
-    8: 9,
-    9: 9,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 0,
+    7: 0,
+    8: 0,
+    9: 0,
   });
 
   function handleMiniBoxClick(row, col) {
@@ -45,10 +49,20 @@ export default function SudokuLayout() {
       newState[selectedCell[0]][selectedCell[1]] = value;
       return newState;
     });
-    setNumbers((prev) => {
-      return { ...prev, [value]: prev[value] - 1 };
-    });
   }
+
+  useEffect(() => {
+    // numbers
+    const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
+    sudokuState.map((row) =>
+      row.map((cell) => {
+        if (cell !== 0) {
+          tempState[cell] -= 1;
+        }
+      })
+    );
+    setNumbers(tempState);
+  }, [sudokuState]);
 
   return (
     <div className='flex flex-col gap-6 items-center'>
