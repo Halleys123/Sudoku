@@ -21,16 +21,16 @@ export default function SudokuLayout() {
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
-  const [numbers, setNumbers] = useState({
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 0,
-    7: 0,
-    8: 0,
-    9: 0,
+  const [numbers, setNumbers] = useState(() => {
+    const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
+    originalSudokuState.map((row) =>
+      row.map((cell) => {
+        if (cell !== 0) {
+          tempState[cell] -= 1;
+        }
+      })
+    );
+    return tempState;
   });
 
   function handleMiniBoxClick(row, col) {
@@ -49,20 +49,11 @@ export default function SudokuLayout() {
       newState[selectedCell[0]][selectedCell[1]] = value;
       return newState;
     });
-  }
 
-  useEffect(() => {
-    // numbers
-    const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
-    sudokuState.map((row) =>
-      row.map((cell) => {
-        if (cell !== 0) {
-          tempState[cell] -= 1;
-        }
-      })
-    );
-    setNumbers(tempState);
-  }, [sudokuState]);
+    setNumbers((prev) => {
+      return { ...prev, [value]: prev[value] - 1 };
+    });
+  }
 
   return (
     <div className='flex flex-col gap-6 items-center'>
