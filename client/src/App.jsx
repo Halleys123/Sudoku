@@ -1,11 +1,11 @@
 import GameLayout from '@layouts/GameLayout.jsx';
 import GeneralLayout from '@layouts/GeneralLayout.jsx';
-import SudokuBox from '@components/sudoku/SudokuBox.jsx';
+import SudokuLayout from '@components/sudoku/SudokuLayout.jsx';
 
 function App() {
   return (
     <GameLayout>
-      <SudokuBox />
+      <SudokuLayout />
     </GameLayout>
   );
 }

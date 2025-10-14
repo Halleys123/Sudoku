@@ -2,7 +2,6 @@ import { useState } from 'react';
 import MiniBox from '@components/sudoku/MiniBox.jsx';
 
 export default function SudokuBox() {
-  const [mode, setMode] = useState('selection'); // continuous-input | note | selection
   const [sudokuState, setSudokuState] = useState([
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0],
