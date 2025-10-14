@@ -5,10 +5,10 @@ import MessageContainer from '@components/message/MessageContainer.jsx';
 
 function App() {
   return (
-    <GameLayout>
+    <GeneralLayout>
       <MessageContainer />
       <SudokuLayout />
-    </GameLayout>
+    </GeneralLayout>
   );
 }
 

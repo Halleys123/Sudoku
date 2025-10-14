@@ -1,6 +1,7 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
 import { useState } from 'react';
+import useMessage from '@/hooks/useMessage';
 // import { useState } from 'react';
 
 const originalSudokuState = [
@@ -17,6 +18,7 @@ const originalSudokuState = [
 
 export default function SudokuLayout() {
   //   const [mode, setMode] = useState('selection'); // continuous-input | note | selection
+  const { addMessage } = useMessage();
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
@@ -40,8 +42,22 @@ export default function SudokuLayout() {
   }
 
   function handleOnClickInput(value) {
-    if (selectedCell[0] === -1 || selectedCell[1] === -1) return;
-    if (originalSudokuState[selectedCell[0]][selectedCell[1]] !== 0) return;
+    if (selectedCell[0] === -1 || selectedCell[1] === -1) {
+      addMessage({
+        heading: 'No cell selected',
+        message: 'Please select a cell to input a value.',
+        type: 'warning',
+      });
+      return;
+    }
+    if (originalSudokuState[selectedCell[0]][selectedCell[1]] !== 0) {
+      addMessage({
+        heading: 'Invalid cell',
+        message: 'You cannot change a pre-filled cell.',
+        type: 'error',
+      });
+      return;
+    }
     if (sudokuState[selectedCell[0]][selectedCell[1]] === value) {
       setSudokuState((prev) => {
         const newState = prev.map((row) => [...row]);
@@ -54,8 +70,14 @@ export default function SudokuLayout() {
 
       return;
     }
-    if (numbers[value] === 0) return;
-
+    if (numbers[value] === 0) {
+      addMessage({
+        heading: 'No blocks left',
+        message: `You have used all blocks of number ${value}.`,
+        type: 'error',
+      });
+      return;
+    }
     setSudokuState((prev) => {
       const newState = prev.map((row) => [...row]);
       newState[selectedCell[0]][selectedCell[1]] = value;
