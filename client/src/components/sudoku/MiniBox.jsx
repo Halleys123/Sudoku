@@ -1,4 +1,6 @@
-export default function MiniBox({
+import { memo } from 'react';
+
+export default memo(function MiniBox({
   data,
   row,
   col,
@@ -38,4 +40,4 @@ export default function MiniBox({
       {data ? data : ''}
     </div>
   );
-}
+});

@@ -1,4 +1,7 @@
-export default function InputBox({
+import { memo } from 'react';
+import BlocksRemaining from './BlocksRemaining';
+
+export default memo(function InputBox({
   number,
   selected,
   blocksLeft,
@@ -27,15 +30,7 @@ export default function InputBox({
       >
         {number}
       </span>
-      {showBlocksLeft && blocksLeft ? (
-        <div className='absolute flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 bg-primary-700 rounded-md top-0 right-0 -translate-y-1.5 translate-x-1.5'>
-          <span className='text-xs text-shade-50 font-primary font-bold'>
-            {blocksLeft}
-          </span>
-        </div>
-      ) : (
-        ''
-      )}
+      {showBlocksLeft && <BlocksRemaining count={blocksLeft} />}
     </div>
   );
-}
+});

@@ -4,5 +4,7 @@ dist
 build
 package-lock.json
 
+profiling-results
+
 .vscode
 .DS_Store

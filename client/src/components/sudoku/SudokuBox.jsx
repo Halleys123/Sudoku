@@ -1,6 +1,7 @@
 import MiniBox from '@components/sudoku/MiniBox.jsx';
+import { memo } from 'react';
 
-export default function SudokuBox({
+export default memo(function SudokuBox({
   onClick,
   selectedCell,
   sudokuState,
@@ -49,4 +50,4 @@ export default function SudokuBox({
       })}
     </div>
   );
-}
+});

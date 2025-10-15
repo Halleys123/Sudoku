@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import InputBox from './InputBox';
 
-export default function SudokuInputs({
+export default memo(function SudokuInputs({
   onClick,
   numbers,
   mode,
@@ -106,4 +107,4 @@ export default function SudokuInputs({
       </div>
     </div>
   );
-}
+});

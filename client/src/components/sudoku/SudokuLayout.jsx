@@ -1,6 +1,6 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import useMessage from '@/hooks/useMessage';
 // import { useState } from 'react';
 
@@ -26,120 +26,121 @@ export default function SudokuLayout() {
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
-  const [options, setOptions] = useState(() => {
+  const options = useMemo(() => {
     const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
-    originalSudokuState.map((row) =>
-      row.map((cell) => {
+    sudokuState.forEach((row) =>
+      row.forEach((cell) => {
         if (cell !== 0) {
           tempState[cell] -= 1;
         }
       })
     );
     return tempState;
-  });
+  }, [sudokuState]);
+  const fillCell = useCallback(
+    (row, col, value) => {
+      if (mode == 'selection') {
+        row = selectedCell[0];
+        col = selectedCell[1];
+      } else {
+        if (selectedOption === null) {
+          // addMessage({
+          //   heading: 'No number selected',
+          //   message: 'Please select a number to input.',
+          //   type: 'warning',
+          // });
+          return;
+        }
+      }
 
-  function fillCell(row, col, value) {
-    if (mode == 'selection') {
-      row = selectedCell[0];
-      col = selectedCell[1];
-    } else {
-      if (selectedOption === null) {
+      if (row === -1 || col === -1) {
         addMessage({
-          heading: 'No number selected',
-          message: 'Please select a number to input.',
+          heading: 'No cell selected',
+          message: 'Please select a cell to input a value.',
           type: 'warning',
         });
         return;
       }
-    }
 
-    if (row === -1 || col === -1) {
-      addMessage({
-        heading: 'No cell selected',
-        message: 'Please select a cell to input a value.',
-        type: 'warning',
-      });
-      return;
-    }
+      if (originalSudokuState[row][col] !== 0) {
+        if (value == -1) {
+          addMessage({
+            heading: 'Invalid cell',
+            message: 'You cannot erase a pre-filled cell.',
+            type: 'error',
+          });
+        }
+        return;
+      }
 
-    if (originalSudokuState[row][col] !== 0) {
-      if (value == -1) {
+      if (sudokuState[row][col] === value) {
+        return;
+      }
+
+      if (value != -1 && sudokuState[row][col] != 0) {
+        return;
+      }
+      console.log(row, col, value);
+
+      if (
+        (mode === 'burst' && selectedOption === -1) ||
+        (mode == 'selection' && value == -1)
+      ) {
+        setSelectedCell([-1, -1]);
+        // erase
+        const prevValue = sudokuState[row][col];
+        if (prevValue === 0) return;
+        setSudokuState((prev) => {
+          const newState = prev.map((r) => [...r]);
+          newState[row][col] = 0;
+          return newState;
+        });
+        return;
+      }
+
+      if (options[value] === 0) {
         addMessage({
-          heading: 'Invalid cell',
-          message: 'You cannot erase a pre-filled cell.',
+          heading: 'No blocks left',
+          message: `You have used all blocks of number ${value}.`,
           type: 'error',
         });
+        return;
       }
-      return;
-    }
 
-    if (sudokuState[row][col] === value) {
-      return;
-    }
-
-    if (value != -1 && sudokuState[row][col] != 0) {
-      return;
-    }
-    console.log(row, col, value);
-
-    if (
-      (mode === 'burst' && selectedOption === -1) ||
-      (mode == 'selection' && value == -1)
-    ) {
-      setSelectedCell([-1, -1]);
-      // erase
-      const prevValue = sudokuState[row][col];
-      if (prevValue === 0) return;
       setSudokuState((prev) => {
         const newState = prev.map((r) => [...r]);
-        newState[row][col] = 0;
+        newState[row][col] = value;
         return newState;
       });
-      setOptions((prev) => {
-        return { ...prev, [prevValue]: prev[prevValue] + 1 };
-      });
-      return;
-    }
+    },
+    [mode, selectedCell, sudokuState, options, addMessage]
+  );
 
-    if (options[value] === 0) {
-      addMessage({
-        heading: 'No blocks left',
-        message: `You have used all blocks of number ${value}.`,
-        type: 'error',
-      });
-      return;
-    }
+  const handleInputClick = useCallback(
+    (row, col) => {
+      if (row == selectedCell[0] && col == selectedCell[1])
+        setSelectedCell([-1, -1]);
+      else setSelectedCell([row, col]);
 
-    setSudokuState((prev) => {
-      const newState = prev.map((r) => [...r]);
-      newState[row][col] = value;
-      return newState;
-    });
-    setOptions((prev) => {
-      return { ...prev, [value]: prev[value] - 1 };
-    });
-  }
+      if (mode == 'burst') {
+        fillCell(row, col, selectedOption);
+        return;
+      }
+    },
+    [selectedCell, mode, fillCell, selectedOption]
+  );
 
-  function handleInputClick(row, col) {
-    if (row == selectedCell[0] && col == selectedCell[1])
-      setSelectedCell([-1, -1]);
-    else setSelectedCell([row, col]);
-
-    if (mode == 'burst') {
-      fillCell(row, col, selectedOption);
-      return;
-    }
-  }
-
-  function handleOptionClick(value) {
-    if (mode == 'burst') {
-      // setSelectedCell([-1, -1]);
-      setSelectedOption(value);
-    } else {
-      setSelectedOption(null);
-      fillCell(selectedCell[0], selectedCell[1], value);
-    }
-  }
+  const handleOptionClick = useCallback(
+    (value) => {
+      if (mode == 'burst') {
+        setSelectedOption((prev) => (prev === value ? null : value));
+      } else {
+        setSelectedOption(null);
+        fillCell(selectedCell[0], selectedCell[1], value);
+      }
+    },
+    [mode, fillCell, selectedCell]
+  );
 
   return (
     <div
