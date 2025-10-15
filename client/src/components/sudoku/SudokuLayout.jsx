@@ -1,6 +1,6 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useMessage from '@/hooks/useMessage';
 // import { useState } from 'react';
 
@@ -17,13 +17,16 @@ const originalSudokuState = [
 ];
 
 export default function SudokuLayout() {
-  //   const [mode, setMode] = useState('selection'); // continuous-input | note | selection
   const { addMessage } = useMessage();
+
+  //   const [mode, setMode] = useState('input'); // input | note
+  const [mode, setMode] = useState('selection'); // burst | selection
+  const [selectedOption, setSelectedOption] = useState(null);
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
-  const [numbers, setNumbers] = useState(() => {
+  const [options, setOptions] = useState(() => {
     const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
     originalSudokuState.map((row) =>
       row.map((cell) => {
@@ -35,14 +38,22 @@ export default function SudokuLayout() {
     return tempState;
   });
 
-  function handleMiniBoxClick(row, col) {
-    if (row == selectedCell[0] && col == selectedCell[1])
-      setSelectedCell([-1, -1]);
-    else setSelectedCell([row, col]);
-  }
+  function fillCell(row, col, value) {
+    if (mode == 'selection') {
+      row = selectedCell[0];
+      col = selectedCell[1];
+    } else {
+      if (selectedOption === null) {
+        addMessage({
+          heading: 'No number selected',
+          message: 'Please select a number to input.',
+          type: 'warning',
+        });
+        return;
+      }
+    }
 
-  function handleOnClickInput(value) {
-    if (selectedCell[0] === -1 || selectedCell[1] === -1) {
+    if (row === -1 || col === -1) {
       addMessage({
         heading: 'No cell selected',
         message: 'Please select a cell to input a value.',
@@ -50,7 +61,7 @@ export default function SudokuLayout() {
       });
       return;
     }
-    if (originalSudokuState[selectedCell[0]][selectedCell[1]] !== 0) {
+    if (originalSudokuState[row][col] !== 0) {
       addMessage({
         heading: 'Invalid cell',
         message: 'You cannot change a pre-filled cell.',
@@ -58,19 +69,19 @@ export default function SudokuLayout() {
       });
       return;
     }
-    if (sudokuState[selectedCell[0]][selectedCell[1]] === value) {
+    if (sudokuState[row][col] === value) {
       setSudokuState((prev) => {
         const newState = prev.map((row) => [...row]);
-        newState[selectedCell[0]][selectedCell[1]] = 0;
+        newState[row][col] = 0;
         return newState;
       });
-      setNumbers((prev) => {
+      setOptions((prev) => {
         return { ...prev, [value]: prev[value] + 1 };
       });
 
       return;
     }
-    if (numbers[value] === 0) {
+    if (options[value] === 0) {
       addMessage({
         heading: 'No blocks left',
         message: `You have used all blocks of number ${value}.`,
@@ -79,14 +90,34 @@ export default function SudokuLayout() {
       return;
     }
     setSudokuState((prev) => {
-      const newState = prev.map((row) => [...row]);
-      newState[selectedCell[0]][selectedCell[1]] = value;
+      const newState = prev.map((r) => [...r]);
+      newState[row][col] = value;
       return newState;
     });
-
-    setNumbers((prev) => {
+    setOptions((prev) => {
       return { ...prev, [value]: prev[value] - 1 };
     });
+  }
+
+  function handleInputClick(row, col) {
+    if (mode == 'burst') {
+      fillCell(row, col, selectedOption);
+      return;
+    }
+
+    if (row == selectedCell[0] && col == selectedCell[1])
+      setSelectedCell([-1, -1]);
+    else setSelectedCell([row, col]);
+  }
+
+  function handleOptionClick(value) {
+    if (mode == 'burst') {
+      setSelectedCell([-1, -1]);
+      setSelectedOption(value);
+    } else {
+      setSelectedOption(value);
+      fillCell(selectedCell[0], selectedCell[1], value);
+    }
   }
 
   return (
@@ -94,14 +125,16 @@ export default function SudokuLayout() {
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key >= '1' && e.key <= '9') {
-          handleOnClickInput(Number(e.key));
+          handleOptionClick(Number(e.key));
         }
         if (e.key == 'Delete' || e.key == 'Backspace') {
-          handleOnClickInput(0);
+          handleOptionClick(0);
         }
         if (e.key == 'Escape') {
           setSelectedCell([-1, -1]);
         }
+        if (mode !== 'selection') return;
+
         if (e.key == 'ArrowUp') {
           setSelectedCell((prev) => {
             if (prev[0] <= 0) return prev;
@@ -130,11 +163,19 @@ export default function SudokuLayout() {
       className='flex flex-row gap-6'
     >
       <SudokuBox
-        onClick={handleMiniBoxClick}
+        onClick={handleInputClick}
         sudokuState={sudokuState}
         selectedCell={selectedCell}
       />
-      <SudokuInputs onClick={handleOnClickInput} numbers={numbers} />
+      <SudokuInputs
+        setMode={setMode}
+        mode={mode}
+        onClick={handleOptionClick}
+        numbers={options}
+        selectedNumber={selectedOption}
+        setSelectedNumber={setSelectedOption}
+        setSelectedCell={setSelectedCell}
+      />
     </div>
   );
 }
