@@ -6,8 +6,10 @@ import MessageContainer from '@components/message/MessageContainer.jsx';
 function App() {
   return (
     <GeneralLayout>
-      <MessageContainer />
-      <SudokuLayout />
+      <GameLayout>
+        <MessageContainer />
+        <SudokuLayout />
+      </GameLayout>
     </GeneralLayout>
   );
 }

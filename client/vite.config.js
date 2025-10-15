@@ -3,7 +3,6 @@ import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath, URL } from 'node:url';
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -18,5 +17,8 @@ export default defineConfig({
       '@providers': fileURLToPath(new URL('./src/providers', import.meta.url)),
       '@contexts': fileURLToPath(new URL('./src/contexts', import.meta.url)),
     },
+  },
+  server: {
+    host: true,
   },
 });

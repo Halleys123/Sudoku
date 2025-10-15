@@ -180,7 +180,7 @@ export default function SudokuLayout() {
           });
         }
       }}
-      className='flex flex-row gap-6'
+      className='flex flex-col md:flex-row gap-6'
     >
       <SudokuBox
         onClick={handleInputClick}
