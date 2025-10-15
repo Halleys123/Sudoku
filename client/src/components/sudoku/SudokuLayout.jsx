@@ -113,7 +113,7 @@ export default function SudokuLayout() {
         return newState;
       });
     },
-    [mode, selectedCell, sudokuState, options, addMessage]
+    [mode, selectedCell, sudokuState, options, addMessage, selectedOption]
   );
 
   const handleInputClick = useCallback(
