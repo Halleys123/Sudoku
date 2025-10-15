@@ -61,42 +61,43 @@ export default function SudokuLayout() {
       });
       return;
     }
+
     if (originalSudokuState[row][col] !== 0) {
-      // addMessage({
-      //   heading: 'Invalid cell',
-      //   message: 'You cannot change a pre-filled cell.',
-      //   type: 'error',
-      // });
+      if (value == -1) {
+        addMessage({
+          heading: 'Invalid cell',
+          message: 'You cannot erase a pre-filled cell.',
+          type: 'error',
+        });
+      }
       return;
     }
 
     if (sudokuState[row][col] === value) {
+      return;
+    }
+
+    if (value != -1 && sudokuState[row][col] != 0) {
+      return;
+    }
+    console.log(row, col, value);
+
+    if (
+      (mode === 'burst' && selectedOption === -1) ||
+      (mode == 'selection' && value == -1)
+    ) {
+      setSelectedCell([-1, -1]);
+      // erase
+      const prevValue = sudokuState[row][col];
+      if (prevValue === 0) return;
       setSudokuState((prev) => {
-        const newState = prev.map((row) => [...row]);
+        const newState = prev.map((r) => [...r]);
         newState[row][col] = 0;
         return newState;
       });
       setOptions((prev) => {
-        return { ...prev, [value]: prev[value] + 1 };
+        return { ...prev, [prevValue]: prev[prevValue] + 1 };
       });
-
-      return;
-    }
-
-    if (sudokuState[row][col]) {
-      setSudokuState((prev) => {
-        const newState = prev.map((row) => [...row]);
-        newState[row][col] = value;
-        return newState;
-      });
-      setOptions((prev) => {
-        return {
-          ...prev,
-          [sudokuState[row][col]]: prev[sudokuState[row][col]] + 1,
-          [value]: prev[value] - 1,
-        };
-      });
-
       return;
     }
 
@@ -186,6 +187,8 @@ export default function SudokuLayout() {
         onClick={handleInputClick}
         sudokuState={sudokuState}
         selectedCell={selectedCell}
+        selectedOption={selectedOption}
+        mode={mode}
       />
       <SudokuInputs
         setMode={setMode}

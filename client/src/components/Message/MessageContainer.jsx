@@ -6,7 +6,7 @@ export default function MessageContainer() {
   const { messages } = useMessage();
 
   return createPortal(
-    <div className='absolute bottom-4 right-4 flex flex-col z-10'>
+    <div className='absolute bottom-4 right-4 gap-3 flex flex-col z-10'>
       {messages.map(({ heading, message, type, insertTime }) => (
         <Message
           key={insertTime}
