@@ -11,6 +11,12 @@ export default function SudokuBox({ onClick, selectedCell, sudokuState }) {
               data={cellData}
               row={rowIndex}
               col={cellIndex}
+              highlight={
+                selectedCell[0] != -1 &&
+                selectedCell[1] != -1 &&
+                cellData == sudokuState[selectedCell[0]][selectedCell[1]] &&
+                cellData != 0
+              }
               onClick={() => onClick(rowIndex, cellIndex)}
               selectedCell={selectedCell}
               style={{

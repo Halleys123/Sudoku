@@ -6,7 +6,6 @@ export default function SudokuInputs({
   setMode,
   selectedNumber,
   setSelectedNumber,
-  setSelectedCell,
 }) {
   return (
     <div className='flex flex-col items-center gap-6'>
@@ -29,11 +28,11 @@ export default function SudokuInputs({
         onClick={() => {
           if (mode == 'selection') {
             setSelectedNumber(1);
-            setSelectedCell([-1, -1]);
+            // setSelectedCell([-1, -1]);
             setMode('burst');
           } else {
             setSelectedNumber(null);
-            setSelectedCell([1, 1]);
+            // setSelectedCell([1, 1]);
             setMode('selection');
           }
         }}

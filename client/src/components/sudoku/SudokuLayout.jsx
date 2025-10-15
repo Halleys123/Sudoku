@@ -1,6 +1,6 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import useMessage from '@/hooks/useMessage';
 // import { useState } from 'react';
 
@@ -62,13 +62,14 @@ export default function SudokuLayout() {
       return;
     }
     if (originalSudokuState[row][col] !== 0) {
-      addMessage({
-        heading: 'Invalid cell',
-        message: 'You cannot change a pre-filled cell.',
-        type: 'error',
-      });
+      // addMessage({
+      //   heading: 'Invalid cell',
+      //   message: 'You cannot change a pre-filled cell.',
+      //   type: 'error',
+      // });
       return;
     }
+
     if (sudokuState[row][col] === value) {
       setSudokuState((prev) => {
         const newState = prev.map((row) => [...row]);
@@ -81,6 +82,24 @@ export default function SudokuLayout() {
 
       return;
     }
+
+    if (sudokuState[row][col]) {
+      setSudokuState((prev) => {
+        const newState = prev.map((row) => [...row]);
+        newState[row][col] = value;
+        return newState;
+      });
+      setOptions((prev) => {
+        return {
+          ...prev,
+          [sudokuState[row][col]]: prev[sudokuState[row][col]] + 1,
+          [value]: prev[value] - 1,
+        };
+      });
+
+      return;
+    }
+
     if (options[value] === 0) {
       addMessage({
         heading: 'No blocks left',
@@ -89,6 +108,7 @@ export default function SudokuLayout() {
       });
       return;
     }
+
     setSudokuState((prev) => {
       const newState = prev.map((r) => [...r]);
       newState[row][col] = value;
@@ -100,22 +120,22 @@ export default function SudokuLayout() {
   }
 
   function handleInputClick(row, col) {
+    if (row == selectedCell[0] && col == selectedCell[1])
+      setSelectedCell([-1, -1]);
+    else setSelectedCell([row, col]);
+
     if (mode == 'burst') {
       fillCell(row, col, selectedOption);
       return;
     }
-
-    if (row == selectedCell[0] && col == selectedCell[1])
-      setSelectedCell([-1, -1]);
-    else setSelectedCell([row, col]);
   }
 
   function handleOptionClick(value) {
     if (mode == 'burst') {
-      setSelectedCell([-1, -1]);
+      // setSelectedCell([-1, -1]);
       setSelectedOption(value);
     } else {
-      setSelectedOption(value);
+      setSelectedOption(null);
       fillCell(selectedCell[0], selectedCell[1], value);
     }
   }

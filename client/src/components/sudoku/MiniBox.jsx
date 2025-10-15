@@ -3,6 +3,7 @@ export default function MiniBox({
   row,
   col,
   selectedCell,
+  highlight = false,
   style,
   onClick,
 }) {
@@ -12,8 +13,12 @@ export default function MiniBox({
         selectedCell[0] === row && selectedCell[1] === col
           ? 'bg-primary-200 hover:bg-primary-300'
           : selectedCell[0] === row || selectedCell[1] === col
-          ? 'hover:bg-primary-200 bg-primary-100'
-          : 'hover:bg-primary-50'
+          ? highlight
+            ? 'bg-primary-200 hover:bg-primary-300'
+            : 'hover:bg-primary-200 bg-primary-100'
+          : highlight
+          ? 'hover:bg-primary-300 bg-primary-200'
+          : 'bg-shade-50'
       }`}
       style={style}
       onClick={onClick}
