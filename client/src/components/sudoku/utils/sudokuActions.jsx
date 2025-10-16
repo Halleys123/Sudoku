@@ -69,7 +69,8 @@ export function inputValue(
   sudokuState,
   setSudokuState,
   setNotes,
-  options
+  options,
+  setSelectedOption
 ) {
   if (
     originalSudokuState[row][col] !== 0 ||
@@ -81,6 +82,14 @@ export function inputValue(
 
   setSudokuState((prev) => {
     const newState = [...prev];
+
+    if (options[value] == 1) {
+      for (let i = 1; i <= 9; i++) {
+        setSelectedOption(i);
+        break;
+      }
+    }
+
     newState[row][col] = value;
     return newState;
   });

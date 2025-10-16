@@ -74,7 +74,8 @@ export default function SudokuLayout() {
       sudokuState,
       setSudokuState,
       setNotes,
-      options
+      options,
+      setSelectedOption
     );
   };
 
@@ -94,6 +95,7 @@ export default function SudokuLayout() {
     if (burstMode) {
       if (options[value] <= 0) return;
       setSelectedOption(value);
+      if (inputMode === 'erase') setInputMode('input');
       return;
     }
 
