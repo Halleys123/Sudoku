@@ -44,7 +44,7 @@ export default function Message({ heading, message, type }) {
         <div className='flex flex-row gap-1 items-center'>
           <Icon className={`text-2xl ${headingColor}`} />
           <span
-            className={`font-secondary text-sm font-semibold ${headingColor}`}
+            className={`font-primary text-sm font-semibold ${headingColor}`}
           >
             {heading}
           </span>
@@ -52,7 +52,7 @@ export default function Message({ heading, message, type }) {
         {/* <MdClose className='text-shade-400 hover:text-shade-600 cursor-pointer text-xl' /> */}
       </div>
       <div className='bg-shade-100 px-3 pb-2'>
-        <span className='font-secondary text-sm text-shade-700 text-shade-800'>
+        <span className='font-primary text-sm text-shade-700 text-shade-800'>
           {message}
         </span>
       </div>

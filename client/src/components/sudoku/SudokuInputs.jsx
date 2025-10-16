@@ -5,27 +5,42 @@ import Toggle from '@components/Toggle.jsx';
 export default memo(function SudokuInputs({
   onClick,
   numbers,
-  mode,
   inputMode,
   setInputMode,
-  setMode,
+  burstMode,
+  setBurstMode,
   selectedNumber,
   setSelectedNumber,
+  eraseCell,
 }) {
-  const options = [
-    {
-      label: 'Erase',
-      value: 'erase',
-    },
-    {
-      label: 'Input',
-      value: 'input',
-    },
-    {
-      label: 'Note',
-      value: 'note',
-    },
-  ];
+  let options;
+  if (burstMode) {
+    options = [
+      {
+        label: 'Erase',
+        value: 'erase',
+      },
+      {
+        label: 'Input',
+        value: 'input',
+      },
+      {
+        label: 'Note',
+        value: 'note',
+      },
+    ];
+  } else {
+    options = [
+      {
+        label: 'Input',
+        value: 'input',
+      },
+      {
+        label: 'Note',
+        value: 'note',
+      },
+    ];
+  }
 
   return (
     <div className='flex flex-col items-center gap-8'>
@@ -46,57 +61,39 @@ export default memo(function SudokuInputs({
       </div>
       <div className='flex flex-col gap-3'>
         <Toggle
+          key={burstMode ? 'burst-mode-toggle' : 'normal-mode-toggle'}
           options={options}
           selected={inputMode}
-          setSelected={setInputMode}
-        />
-        <button
-          id='notes-mode'
-          onClick={() => {
-            setInputMode((prev) => (prev === 'note' ? 'input' : 'note'));
+          setSelected={(mode) => {
+            setInputMode(mode);
+            if (!burstMode || mode === 'erase') {
+              setSelectedNumber(null);
+              return;
+            }
+            if (selectedNumber) return;
+            setSelectedNumber(1);
           }}
-          className={`relative max-w-72 w-full px-4 py-3 rounded-lg font-secondary text-base font-semibold transition-all duration-300 cursor-pointer border-2 ${
-            inputMode === 'note'
-              ? 'bg-secondary-500 hover:bg-secondary-600 text-shade-50 border-accent-700 shadow-lg shadow-accent-500/30 scale-[1.02]'
-              : 'bg-gradient-to-br from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-800 border-primary-200 hover:border-primary-300 hover:shadow-md'
-          }`}
-        >
-          <span className='flex items-center justify-center gap-2'>
-            <svg
-              className='w-5 h-5'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
-              />
-            </svg>
-            {mode === 'notes' ? 'Notes Mode Active' : 'Enable Notes Mode'}
-          </span>
-        </button>
+        />
         <button
           id='burst-selection-mode'
           onClick={() => {
-            if (mode == 'selection') {
+            if (!burstMode) {
               setSelectedNumber(1);
-              setMode('burst');
+              setBurstMode(true);
             } else {
+              setInputMode('input');
               setSelectedNumber(null);
-              setMode('selection');
+              setBurstMode(false);
             }
           }}
           className={`relative max-w-72 w-full px-4 py-3 rounded-lg font-secondary text-base font-semibold transition-all duration-300 cursor-pointer border-2 ${
-            mode === 'burst'
+            burstMode
               ? 'bg-error-500 hover:bg-error-600 text-shade-50 border-error-700 shadow-lg shadow-error-500/30 scale-[1.02]'
-              : 'bg-gradient-to-br from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-800 border-primary-200 hover:border-primary-300 hover:shadow-md'
+              : 'bg-gradient-to-br bg-shade-50 hover:bg-shade-100 text-shade-800'
           }`}
         >
-          <span className='flex items-center justify-center gap-2'>
-            {mode === 'burst' ? (
+          <span className='flex items-center text-md font-primary justify-center gap-2'>
+            {burstMode ? (
               <svg
                 className='w-5 h-5 animate-pulse'
                 fill='currentColor'
@@ -119,42 +116,42 @@ export default memo(function SudokuInputs({
                 />
               </svg>
             )}
-            {mode === 'burst' ? 'Burst Mode Active' : 'Enable Burst Mode'}
+            {burstMode ? 'Burst Mode Active' : 'Enable Burst Mode'}
           </span>
-        </button>
-        <button
-          onClick={() => {
-            if (mode == 'burst') {
-              setSelectedNumber((prev) => (prev == -1 ? null : -1));
-            } else {
-              setSelectedNumber(null);
-              onClick(-1);
-            }
-          }}
-          id='eraser-mode'
-          className={`relative max-w-72 w-full px-4 py-3 rounded-lg font-secondary text-base font-semibold transition-all duration-300 cursor-pointer border-2 ${
-            selectedNumber === -1
-              ? 'bg-error-500 hover:bg-error-600 text-shade-50 border-error-700 shadow-lg shadow-error-500/30 scale-[1.02]'
-              : 'bg-gradient-to-br from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-800 border-primary-200 hover:border-primary-300 hover:shadow-md'
-          }`}
-        >
-          <span className='flex items-center justify-center gap-2'>
-            <svg
-              className='w-5 h-5'
-              fill='none'
-              stroke='currentColor'
-              strokeWidth='2'
-              viewBox='0 0 24 24'
-            >
-              <path
-                strokeLinecap='round'
-                strokeLinejoin='round'
-                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10'
-              />
-            </svg>
-            {mode == 'burst' ? 'Eraser Mode' : 'Erase'}
-          </span>
-        </button>
+        </button>{' '}
+        {!burstMode && (
+          <button
+            id='burst-selection-mode'
+            onClick={eraseCell}
+            className={`relative max-w-72 w-full px-4 py-3 rounded-lg font-secondary text-base font-semibold transition-all duration-300 cursor-pointer border-2 ${
+              burstMode
+                ? 'bg-error-500 hover:bg-error-600 text-shade-50 border-error-700 shadow-lg shadow-error-500/30 scale-[1.02]'
+                : 'bg-gradient-to-br bg-shade-50 hover:bg-shade-100 text-shade-800'
+            }`}
+          >
+            <span className='flex items-center text-md font-primary justify-center gap-2'>
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M19 21H5a2 2 0 01-2-2v-1.586a2 2 0 01.586-1.414l9-9a2 2 0 012.828 0l3.586 3.586a2 2 0 010 2.828l-9 9A2 2 0 015 21z'
+                />
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M7 17l8-8'
+                />
+              </svg>
+              Erase
+            </span>
+          </button>
+        )}
       </div>
     </div>
   );

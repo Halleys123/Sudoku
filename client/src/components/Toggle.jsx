@@ -35,21 +35,21 @@ export default function Toggle({ options, selected, setSelected }) {
   }, [activeIndex, options]);
 
   const getSliderBorderRadius = () => {
-    if (options.length === 2) return '9999px';
-    if (activeIndex === 0) return '9999px 12px 12px 9999px';
-    if (activeIndex === options.length - 1) return '12px 9999px 9999px 12px';
+    if (options.length === 2) return '4px';
+    if (activeIndex === 0) return '4px 12px 12px 4px';
+    if (activeIndex === options.length - 1) return '12px 4px 4px 12px';
     return '12px';
   };
 
   const getButtonBorderRadius = (index) => {
-    if (options.length === 2) return 'rounded-full';
-    if (index === 0) return 'rounded-l-full rounded-r-lg';
-    if (index === options.length - 1) return 'rounded-r-full rounded-l-lg';
+    if (options.length === 2) return 'rounded-lg';
+    if (index === 0) return 'rounded-l-lg rounded-r-lg';
+    if (index === options.length - 1) return 'rounded-r-lg rounded-l-lg';
     return 'rounded-lg';
   };
 
   return (
-    <div className='relative flex flex-row p-1.5 h-14 bg-shade-50 rounded-full shadow-inner'>
+    <div className='relative flex flex-row p-1.5 h-12 bg-shade-50 rounded-lg shadow-inner'>
       <motion.div
         className='absolute top-1.5 bottom-1.5 bg-gradient-to-br from-primary-100 to-primary-200 shadow-md'
         animate={{
@@ -70,7 +70,7 @@ export default function Toggle({ options, selected, setSelected }) {
           <motion.button
             key={opt.value}
             ref={(el) => (buttonRefs.current[index] = el)}
-            className={`relative cursor-pointer z-10 flex-1 px-4 font-bold font-primary text-center transition-colors duration-200 ${getButtonBorderRadius(
+            className={`relative cursor-pointer z-10 flex-1 px-4 font-bold font-primary text-center text-md transition-colors duration-200 ${getButtonBorderRadius(
               index
             )}`}
             onClick={() => setSelected(opt.value)}

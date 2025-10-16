@@ -7,8 +7,31 @@ export default memo(function SudokuBox({
   sudokuState,
   selectedOption,
   notes,
-  mode,
+  originalSudokuState,
 }) {
+  function shouldHighlight(row, col, cellData) {
+    // if burst mode then first priority is any selectedCell matching values
+    // if no selected cell then selectedValue or option and same row or col
+    // if no selectedValue or option then nothing
+
+    // if not burst mode then just selectedCell matching values or same row and col
+
+    if (selectedCell[0] != -1 && selectedCell[1] != -1) {
+      return (
+        row === selectedCell[0] ||
+        col === selectedCell[1] ||
+        (cellData == sudokuState[selectedCell[0]][selectedCell[1]] &&
+          cellData != 0)
+      );
+    }
+
+    if (selectedOption != null) {
+      return cellData == selectedOption && cellData != 0;
+    }
+
+    return false;
+  }
+
   return (
     <div className='max-w-xl aspect-square rounded-2xl bg-shade-50 grid grid-cols-9 overflow-hidden border border-shade-100'>
       {sudokuState.map((rowData, rowIndex) => {
@@ -19,17 +42,9 @@ export default memo(function SudokuBox({
               data={cellData}
               row={rowIndex}
               col={cellIndex}
+              isOriginalCell={originalSudokuState[rowIndex][cellIndex] !== 0}
               notes={notes[rowIndex * 10 + cellIndex]}
-              highlight={
-                mode === 'selection'
-                  ? selectedCell[0] != -1 &&
-                    selectedCell[1] != -1 &&
-                    cellData == sudokuState[selectedCell[0]][selectedCell[1]] &&
-                    cellData != 0
-                  : selectedOption != null &&
-                    cellData == selectedOption &&
-                    cellData != 0
-              }
+              highlight={shouldHighlight(rowIndex, cellIndex, cellData)}
               onClick={() => onClick(rowIndex, cellIndex)}
               selectedCell={selectedCell}
               style={{

@@ -5,45 +5,51 @@ export default memo(function MiniBox({
   row,
   col,
   selectedCell,
+  isOriginalCell,
   highlight = false,
   style,
   onClick,
   notes = [],
 }) {
-  const isSelected = selectedCell?.[0] === row && selectedCell?.[1] === col;
-  const sharesAxis =
-    !isSelected && (selectedCell?.[0] === row || selectedCell?.[1] === col);
+  const isSelected = selectedCell[0] === row && selectedCell[1] === col;
+  const isHighlighted = highlight && !isSelected;
 
-  const selectedColor =
-    'bg-primary-200 hover:bg-primary-300 text-shade-900 font-bold';
-  const highlightColor =
-    'bg-primary-200 hover:bg-primary-300 text-primary-700 font-bold';
-  const axisColor =
-    'bg-primary-100 hover:bg-primary-200 text-primary-700 font-bold';
-  const defaultColor = 'bg-shade-50 hover:bg-primary-100 text-shade-800';
+  const outerClass = 'p-[1px] w-12 h-12 sm:w-16 sm:h-16 relative';
+  const innerBaseClass = 'w-full h-full grid grid-cols-3 grid-rows-3';
 
-  const innerBaseClass =
-    'relative grid grid-cols-3 grid-rows-3 h-full w-full font-primary text-md md:text-xl flex items-center justify-center transition-colors';
-  const selectedClass = `text-shade-900 font-bold ${selectedColor}`;
-  const highlightClass = `text-primary-700 font-bold ${highlightColor}`;
-  const axisClass = `text-primary-700 font-bold ${axisColor}`;
-  const defaultClass = `bg-shade-50 hover:bg-primary-100 ${defaultColor}`;
+  // Which ever cell it is either original or filled
+  // If isSelected then
+  // bg = primary-400 hover:bg-primary-500 text-neutral-700 font-bold
+  // else if isHighlighted then
+  // bg = primary-200 hover:bg-primary-300 text-neutral-800 font-medium
+  // else if isOriginalCell then
+  // text-neutral-500
+  // else if has data then
+  // text-secondary-600
 
-  const outerClass = `relative h-11 w-11 md:w-16 md:h-16 select-none cursor-pointer p-[1px]`;
+  let stateClass = 'relative cursor-pointer transition-colors duration-100 ';
+  let textClass = ' font-secondary text-2xl ';
 
-  const stateClass = isSelected
-    ? selectedClass
-    : highlight
-    ? highlightClass
-    : sharesAxis
-    ? axisClass
-    : defaultClass;
+  if (isSelected) {
+    stateClass += 'bg-primary-300 hover:bg-primary-400';
+    textClass += 'text-shade-50 font-normal';
+  } else if (isHighlighted) {
+    stateClass += 'bg-primary-200 hover:bg-primary-300';
+    textClass += 'text-neutral-900 font-normal';
+  } else if (isOriginalCell) {
+    textClass += 'text-neutral-500 font-light';
+  } else if (data) {
+    stateClass += 'bg-neutral-100 hover:bg-neutral-200';
+    textClass += 'text-primary-800/60 font-medium';
+  }
 
   return (
     <div className={outerClass} style={style} onClick={onClick}>
       {/* Inner div with all visual states */}
       <div className={`${innerBaseClass} ${stateClass}`}>
-        <span className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10'>
+        <span
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 ${textClass}`}
+        >
           {data ? data : ''}
         </span>
         {!data &&

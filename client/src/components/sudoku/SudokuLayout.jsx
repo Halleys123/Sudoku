@@ -1,7 +1,8 @@
 import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import useMessage from '@/hooks/useMessage';
+import * as sudokuActions from './utils/sudokuActions.jsx';
 
 const originalSudokuState = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -18,8 +19,8 @@ const originalSudokuState = [
 export default function SudokuLayout() {
   const { addMessage } = useMessage();
 
-  const [inputMode, setInputMode] = useState('note'); // input | note | erase
-  const [mode, setMode] = useState('selection'); // burst | selection
+  const [inputMode, setInputMode] = useState('input'); // input | note | erase
+  const [burstMode, setBurstMode] = useState(false);
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
@@ -27,9 +28,7 @@ export default function SudokuLayout() {
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
-  const [notes, setNotes] = useState({
-    // 11: new Set([1, 8, 3]),
-  });
+  const [notes, setNotes] = useState({});
 
   const options = useMemo(() => {
     const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
@@ -43,61 +42,101 @@ export default function SudokuLayout() {
     return tempState;
   }, [sudokuState]);
 
-  const handleOptionClick = useCallback((optionValue) => {}, []);
+  const toggleNote = (row, col, value) => {
+    sudokuActions.toggleNote(
+      row,
+      col,
+      value,
+      originalSudokuState,
+      sudokuState,
+      setNotes
+    );
+  };
+
+  const clearCell = (row, col) => {
+    sudokuActions.clearCell(
+      row,
+      col,
+      originalSudokuState,
+      sudokuState,
+      setSudokuState,
+      setNotes,
+      addMessage
+    );
+  };
+
+  const inputValue = (row, col, value) => {
+    sudokuActions.inputValue(
+      row,
+      col,
+      value,
+      originalSudokuState,
+      sudokuState,
+      setSudokuState,
+      setNotes,
+      options
+    );
+  };
+
+  function handleCellClick(row, col) {
+    setSelectedCell((prev) => {
+      if (row == prev[0] && col == prev[1]) return [-1, -1];
+      else return [row, col];
+    });
+    if (!burstMode) return;
+
+    if (inputMode === 'input') inputValue(row, col, selectedOption);
+    else if (inputMode === 'note') toggleNote(row, col, selectedOption);
+    else if (inputMode === 'erase') clearCell(row, col);
+  }
+
+  function handleOptionClick(value) {
+    if (burstMode) {
+      if (options[value] <= 0) return;
+      setSelectedOption(value);
+      return;
+    }
+
+    if (inputMode === 'input')
+      inputValue(selectedCell[0], selectedCell[1], value);
+    else if (inputMode === 'note')
+      toggleNote(selectedCell[0], selectedCell[1], value);
+    else if (inputMode === 'erase') clearCell(selectedCell[0], selectedCell[1]);
+  }
+
+  const handleKeyDown = (e) => {
+    sudokuActions.handleKeyDown(
+      e,
+      burstMode,
+      selectedCell,
+      setSelectedCell,
+      handleOptionClick,
+      originalSudokuState,
+      sudokuState,
+      setSudokuState,
+      setNotes,
+      addMessage
+    );
+  };
 
   return (
     <div
       tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key >= '1' && e.key <= '9') {
-          handleOptionClick(Number(e.key));
-        }
-        if (e.key == 'Delete' || e.key == 'Backspace') {
-          handleOptionClick(0);
-        }
-        if (e.key == 'Escape') {
-          setSelectedCell([-1, -1]);
-        }
-        if (mode !== 'selection') return;
-
-        if (e.key == 'ArrowUp') {
-          setSelectedCell((prev) => {
-            if (prev[0] <= 0) return prev;
-            return [prev[0] - 1, prev[1]];
-          });
-        }
-        if (e.key == 'ArrowDown') {
-          setSelectedCell((prev) => {
-            if (prev[0] >= 8) return prev;
-            return [prev[0] + 1, prev[1]];
-          });
-        }
-        if (e.key == 'ArrowLeft') {
-          setSelectedCell((prev) => {
-            if (prev[1] <= 0) return prev;
-            return [prev[0], prev[1] - 1];
-          });
-        }
-        if (e.key == 'ArrowRight') {
-          setSelectedCell((prev) => {
-            if (prev[1] >= 8) return prev;
-            return [prev[0], prev[1] + 1];
-          });
-        }
-      }}
+      onKeyDown={handleKeyDown}
       className='flex flex-col md:flex-row gap-6'
     >
       <SudokuBox
-        // onClick={handleInputClick}
+        onClick={handleCellClick}
         sudokuState={sudokuState}
+        originalSudokuState={originalSudokuState}
         selectedCell={selectedCell}
         selectedOption={selectedOption}
-        mode={mode}
+        burstMode={burstMode}
         notes={notes}
       />
       <SudokuInputs
-        setMode={setMode}
-        mode={mode}
+        burstMode={burstMode}
+        setBurstMode={setBurstMode}
         onClick={handleOptionClick}
         numbers={options}
         selectedNumber={selectedOption}
@@ -105,6 +144,7 @@ export default function SudokuLayout() {
         inputMode={inputMode}
         setSelectedNumber={setSelectedOption}
         setSelectedCell={setSelectedCell}
+        eraseCell={() => clearCell(selectedCell[0], selectedCell[1])}
       />
     </div>
   );
