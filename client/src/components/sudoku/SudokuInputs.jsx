@@ -5,6 +5,8 @@ export default memo(function SudokuInputs({
   onClick,
   numbers,
   mode,
+  inputMode,
+  setInputMode,
   setMode,
   selectedNumber,
   setSelectedNumber,
@@ -27,6 +29,34 @@ export default memo(function SudokuInputs({
         })}
       </div>
       <div className='flex flex-col gap-3'>
+        <button
+          id='notes-mode'
+          onClick={() => {
+            setInputMode((prev) => (prev === 'note' ? 'input' : 'note'));
+          }}
+          className={`relative max-w-72 w-full px-4 py-3 rounded-lg font-secondary text-base font-semibold transition-all duration-300 cursor-pointer border-2 ${
+            inputMode === 'note'
+              ? 'bg-secondary-500 hover:bg-secondary-600 text-shade-50 border-accent-700 shadow-lg shadow-accent-500/30 scale-[1.02]'
+              : 'bg-gradient-to-br from-primary-50 to-primary-100 hover:from-primary-100 hover:to-primary-200 text-primary-800 border-primary-200 hover:border-primary-300 hover:shadow-md'
+          }`}
+        >
+          <span className='flex items-center justify-center gap-2'>
+            <svg
+              className='w-5 h-5'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+              viewBox='0 0 24 24'
+            >
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                d='M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125'
+              />
+            </svg>
+            {mode === 'notes' ? 'Notes Mode Active' : 'Enable Notes Mode'}
+          </span>
+        </button>
         <button
           id='burst-selection-mode'
           onClick={() => {
