@@ -23,7 +23,7 @@ export default memo(function MiniBox({
   const defaultColor = 'bg-shade-50 hover:bg-primary-100 text-shade-800';
 
   const innerBaseClass =
-    'relative grid grid-cols-3 grid-rows-3 h-full w-full font-secondary text-md md:text-xl flex items-center justify-center transition-colors';
+    'relative grid grid-cols-3 grid-rows-3 h-full w-full font-primary text-md md:text-xl flex items-center justify-center transition-colors';
   const selectedClass = `text-shade-900 font-bold ${selectedColor}`;
   const highlightClass = `text-primary-700 font-bold ${highlightColor}`;
   const axisClass = `text-primary-700 font-bold ${axisColor}`;

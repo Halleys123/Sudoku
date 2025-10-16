@@ -9,16 +9,7 @@ function App() {
     <GeneralLayout>
       <GameLayout>
         <MessageContainer />
-        <Toggle
-          options={[
-            { label: 'Option 1', value: 'opt1' },
-            { label: 'Option 2', value: 'opt2' },
-            { label: 'Option 2', value: 'opt3' },
-          ]}
-          selected={'opt1'}
-          setSelected={() => {}}
-        />
-        {/* <SudokuLayout /> */}
+        <SudokuLayout />
       </GameLayout>
     </GeneralLayout>
   );

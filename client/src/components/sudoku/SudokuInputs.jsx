@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import InputBox from './InputBox';
+import Toggle from '@components/Toggle.jsx';
 
 export default memo(function SudokuInputs({
   onClick,
@@ -11,6 +12,21 @@ export default memo(function SudokuInputs({
   selectedNumber,
   setSelectedNumber,
 }) {
+  const options = [
+    {
+      label: 'Erase',
+      value: 'erase',
+    },
+    {
+      label: 'Input',
+      value: 'input',
+    },
+    {
+      label: 'Note',
+      value: 'note',
+    },
+  ];
+
   return (
     <div className='flex flex-col items-center gap-8'>
       <div className='grid grid-cols-5 md:grid-cols-3 gap-4 h-fit'>
@@ -29,6 +45,11 @@ export default memo(function SudokuInputs({
         })}
       </div>
       <div className='flex flex-col gap-3'>
+        <Toggle
+          options={options}
+          selected={inputMode}
+          setSelected={setInputMode}
+        />
         <button
           id='notes-mode'
           onClick={() => {

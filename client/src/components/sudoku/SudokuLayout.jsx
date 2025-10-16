@@ -18,10 +18,12 @@ const originalSudokuState = [
 export default function SudokuLayout() {
   const { addMessage } = useMessage();
 
-  const [inputMode, setInputMode] = useState('note'); // input | note
+  const [inputMode, setInputMode] = useState('note'); // input | note | erase
   const [mode, setMode] = useState('selection'); // burst | selection
+
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
+
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
@@ -41,160 +43,7 @@ export default function SudokuLayout() {
     return tempState;
   }, [sudokuState]);
 
-  const addNote = useCallback((row, col, value) => {
-    setNotes((prev) => {
-      const newNotes = { ...prev };
-      const cellKey = row * 10 + col;
-      if (!newNotes[cellKey]) newNotes[cellKey] = new Set();
-      if (newNotes[cellKey].has(value)) {
-        newNotes[cellKey].delete(value);
-        if (newNotes[cellKey].size === 0) delete newNotes[cellKey];
-      } else newNotes[cellKey].add(value);
-      return newNotes;
-    });
-  }, []);
-
-  const clearNotes = useCallback((row, col) => {
-    setNotes((prev) => {
-      const newNotes = { ...prev };
-      const cellKey = row * 10 + col;
-      if (!newNotes[cellKey]) return prev;
-      newNotes[cellKey].clear();
-      return newNotes;
-    });
-  }, []);
-
-  const clearCell = useCallback(
-    (row, col) => {
-      if (originalSudokuState[row][col] !== 0) return;
-      if (sudokuState[row][col] === 0) return;
-      setSudokuState((prev) => {
-        const newState = prev.map((r) => [...r]);
-        newState[row][col] = 0;
-        return newState;
-      });
-      clearNotes(row, col);
-    },
-    [sudokuState, clearNotes]
-  );
-
-  const fillCell = useCallback(
-    (row, col, value) => {
-      if (mode == 'selection') {
-        row = selectedCell[0];
-        col = selectedCell[1];
-      } else {
-        if (selectedOption === null) {
-          // addMessage({
-          //   heading: 'No number selected',
-          //   message: 'Please select a number to input.',
-          //   type: 'warning',
-          // });
-          return;
-        }
-      }
-
-      if (row === -1 || col === -1) {
-        addMessage({
-          heading: 'No cell selected',
-          message: 'Please select a cell to input a value.',
-          type: 'warning',
-        });
-        return;
-      }
-
-      if (originalSudokuState[row][col] !== 0) {
-        if (value == -1) {
-          addMessage({
-            heading: 'Invalid cell',
-            message: 'You cannot erase a pre-filled cell.',
-            type: 'error',
-          });
-        }
-        return;
-      }
-
-      if (sudokuState[row][col] === value) {
-        return;
-      }
-
-      if (value != -1 && sudokuState[row][col] != 0) {
-        return;
-      }
-      console.log(row, col, value);
-
-      if (
-        (mode === 'burst' && selectedOption === -1) ||
-        (mode == 'selection' && value == -1)
-      ) {
-        // erase
-        clearCell(row, col);
-        clearNotes(row, col);
-
-        setSelectedCell([-1, -1]);
-        return;
-      }
-
-      if (inputMode === 'note') {
-        addNote(row, col, value);
-        return;
-      }
-
-      if (options[value] === 0) {
-        addMessage({
-          heading: 'No blocks left',
-          message: `You have used all blocks of number ${value}.`,
-          type: 'error',
-        });
-        return;
-      }
-      // clear notes
-      clearNotes(row, col);
-      setSudokuState((prev) => {
-        const newState = prev.map((r) => [...r]);
-        newState[row][col] = value;
-        return newState;
-      });
-    },
-    [
-      mode,
-      selectedCell,
-      sudokuState,
-      options,
-      addMessage,
-      selectedOption,
-      addNote,
-      clearNotes,
-      clearCell,
-      inputMode,
-    ]
-  );
-
-  const handleInputClick = useCallback(
-    (row, col) => {
-      if (row == selectedCell[0] && col == selectedCell[1])
-        setSelectedCell([-1, -1]);
-      else setSelectedCell([row, col]);
-
-      if (mode == 'burst') {
-        fillCell(row, col, selectedOption);
-        return;
-      }
-    },
-    [selectedCell, mode, fillCell, selectedOption]
-  );
-
-  const handleOptionClick = useCallback(
-    (value) => {
-      if (mode == 'burst') {
-        setSelectedOption((prev) => (prev === value ? null : value));
-      } else {
-        setSelectedOption(null);
-        fillCell(selectedCell[0], selectedCell[1], value);
-      }
-    },
-    [mode, fillCell, selectedCell]
-  );
+  const handleOptionClick = useCallback((optionValue) => {}, []);
 
   return (
     <div
@@ -239,7 +88,7 @@ export default function SudokuLayout() {
       className='flex flex-col md:flex-row gap-6'
     >
       <SudokuBox
-        onClick={handleInputClick}
+        // onClick={handleInputClick}
         sudokuState={sudokuState}
         selectedCell={selectedCell}
         selectedOption={selectedOption}

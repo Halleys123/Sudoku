@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 export default function Toggle({ options, selected, setSelected }) {
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [dimensions, setDimensions] = useState({ width: 0, left: 0 });
+  const buttonRefs = useRef([]);
 
-  const { selectedIndex, optionWidth } = useMemo(() => {
+  const selectedIndex = useMemo(() => {
     if (!Array.isArray(options) || options.length < 2 || options.length > 4) {
       throw new Error('Toggle component requires 2 to 4 options.');
     }
@@ -18,13 +20,19 @@ export default function Toggle({ options, selected, setSelected }) {
       throw new Error(`Selected value "${selected}" is not in the options.`);
     }
 
-    const index = options.findIndex((opt) => opt.value === selected);
-    const width = 100 / options.length;
-
-    return { selectedIndex: index, optionWidth: width };
+    return options.findIndex((opt) => opt.value === selected);
   }, [options, selected]);
 
   const activeIndex = hoveredIndex !== null ? hoveredIndex : selectedIndex;
+
+  // Update overlay dimensions when active index changes
+  useEffect(() => {
+    const activeButton = buttonRefs.current[activeIndex];
+    if (activeButton) {
+      const { offsetWidth, offsetLeft } = activeButton;
+      setDimensions({ width: offsetWidth, left: offsetLeft });
+    }
+  }, [activeIndex, options]);
 
   const getSliderBorderRadius = () => {
     if (options.length === 2) return '9999px';
@@ -45,17 +53,14 @@ export default function Toggle({ options, selected, setSelected }) {
       <motion.div
         className='absolute top-1.5 bottom-1.5 bg-gradient-to-br from-primary-100 to-primary-200 shadow-md'
         animate={{
-          left: `${activeIndex * optionWidth}%`,
+          left: dimensions.left,
+          width: dimensions.width,
           borderRadius: getSliderBorderRadius(),
         }}
         transition={{
           type: 'spring',
           stiffness: 400,
           damping: 30,
-        }}
-        style={{
-          width: `calc(${optionWidth}% - 0.75rem)`,
-          marginLeft: '0.375rem',
         }}
       />
 
@@ -64,7 +69,8 @@ export default function Toggle({ options, selected, setSelected }) {
         return (
           <motion.button
             key={opt.value}
-            className={`relative cursor-pointer z-10 flex-1 px-4 font-bold font-primary transition-colors duration-200 ${getButtonBorderRadius(
+            ref={(el) => (buttonRefs.current[index] = el)}
+            className={`relative cursor-pointer z-10 flex-1 px-4 font-bold font-primary text-center transition-colors duration-200 ${getButtonBorderRadius(
               index
             )}`}
             onClick={() => setSelected(opt.value)}
