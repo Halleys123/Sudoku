@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "allowUnusedLabels": false,
+    "alwaysStrict": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noImplicitOverride": true,
+    "strict": true,
+    "noUnusedParameters": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "allowUnreachableCode": false,
+
+    "incremental": true,
+
+    "allowArbitraryExtensions": false,
+    "allowImportingTsExtensions": false,
+    "baseUrl": "./",
+    "paths": {
+      "@controller/*": ["./controllers/*"],
+      "@middleware/*": ["./middleware/*"],
+      "@routes/*": ["./routes/*"],
+      "@models/*": ["./models/*"],
+      "@redis/*": ["./redis/*"],
+      "@sockets/*": ["./sockets/*"]
+    },
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "es2020",
+    "lib": ["es2020"],
+    "outDir": "./dist",
+    "rootDir": "./",
+    "sourceMap": false,
+    "typeRoots": ["./types", "./node_modules/@types"],
+
+    "noEmit": false,
+    "declaration": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "watchOptions": {
+    "watchDirectory": "dynamicprioritypolling",
+    "excludeDirectories": ["./node_modules", "./dist"]
+  }
+}
