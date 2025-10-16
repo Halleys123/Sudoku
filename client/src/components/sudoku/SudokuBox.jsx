@@ -6,6 +6,7 @@ export default memo(function SudokuBox({
   selectedCell,
   sudokuState,
   selectedOption,
+  notes,
   mode,
 }) {
   return (
@@ -18,6 +19,7 @@ export default memo(function SudokuBox({
               data={cellData}
               row={rowIndex}
               col={cellIndex}
+              notes={notes[rowIndex * 10 + cellIndex]}
               highlight={
                 mode === 'selection'
                   ? selectedCell[0] != -1 &&

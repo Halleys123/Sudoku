@@ -2,7 +2,6 @@ import SudokuBox from './SudokuBox';
 import SudokuInputs from './SudokuInputs';
 import { useState, useMemo, useCallback } from 'react';
 import useMessage from '@/hooks/useMessage';
-// import { useState } from 'react';
 
 const originalSudokuState = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
@@ -26,6 +25,9 @@ export default function SudokuLayout() {
   const [sudokuState, setSudokuState] = useState(
     originalSudokuState.map((row) => [...row])
   );
+  const [notes, setNotes] = useState({
+    11: new Set([1, 8, 3]),
+  });
   const options = useMemo(() => {
     const tempState = { 1: 9, 2: 9, 3: 9, 4: 9, 5: 9, 6: 9, 7: 9, 8: 9, 9: 9 };
     sudokuState.forEach((row) =>
@@ -190,6 +192,7 @@ export default function SudokuLayout() {
         selectedCell={selectedCell}
         selectedOption={selectedOption}
         mode={mode}
+        notes={notes}
       />
       <SudokuInputs
         setMode={setMode}
