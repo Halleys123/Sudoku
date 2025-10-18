@@ -1,16 +1,24 @@
-import GameLayout from '@layouts/GameLayout.jsx';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import GeneralLayout from '@layouts/GeneralLayout.jsx';
-import SudokuLayout from '@components/sudoku/SudokuLayout.jsx';
 import MessageContainer from '@components/message/MessageContainer.jsx';
-import Toggle from '@components/Toggle.jsx';
+import Homepage from '@pages/Homepage.jsx';
+import Competitive from '@pages/Competitive.jsx';
+import Leaderboard from '@pages/Leaderboard.jsx';
+import MyStats from '@pages/MyStats.jsx';
+import SinglePlayer from '@pages/SinglePlayer.jsx';
 
 function App() {
   return (
     <GeneralLayout>
-      <GameLayout>
-        <MessageContainer />
-        <SudokuLayout />
-      </GameLayout>
+      <Routes>
+        <Route path='/' element={<Homepage />} />
+        <Route path='/single-player' element={<SinglePlayer />} />
+        <Route path='/competitive' element={<Competitive />} />
+        <Route path='/leaderboard' element={<Leaderboard />} />
+        <Route path='/my-stats' element={<MyStats />} />
+        <Route path='*' element={<Navigate to='/' replace />} />
+      </Routes>
+      <MessageContainer />
     </GeneralLayout>
   );
 }
