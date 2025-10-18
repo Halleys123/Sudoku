@@ -22,8 +22,27 @@ export default defineConfig(
       },
     },
     rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'error',
       '@typescript-eslint/no-unsafe-call': 'error',
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: false,
+          allowTypedFunctionExpressions: false,
+          allowHigherOrderFunctions: false,
+        },
+      ],
+      '@typescript-eslint/explicit-module-boundary-types': 'error',
+      '@typescript-eslint/typedef': [
+        'error',
+        {
+          parameter: true,
+          propertyDeclaration: true,
+          variableDeclaration: true,
+          arrowParameter: true,
+        },
+      ],
     },
   }
 );

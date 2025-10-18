@@ -42,7 +42,7 @@
     "tsBuildInfoFile": ".tsbuildinfo",
     "skipLibCheck": true
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.d.ts"],
   "exclude": ["node_modules", "dist", "**/*.js"],
   "watchOptions": {
     "watchDirectory": "dynamicprioritypolling",
