@@ -34,14 +34,18 @@
     "rootDir": "./",
     "sourceMap": false,
     "typeRoots": ["./types", "./node_modules/@types"],
-
     "noEmit": false,
     "declaration": false,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    "tsBuildInfoFile": ".tsbuildinfo",
+    "skipLibCheck": true
   },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "dist", "**/*.js"],
   "watchOptions": {
     "watchDirectory": "dynamicprioritypolling",
-    "excludeDirectories": ["./node_modules", "./dist"]
+    "excludeDirectories": ["node_modules", "dist"]
   }
 }

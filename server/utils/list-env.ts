@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-let NODE_ENV = process.env.NODE_ENV || 'production';
+const NODE_ENV: string = process.env.NODE_ENV || 'production';
 
 console.log('Working in', NODE_ENV, 'mode.');
 

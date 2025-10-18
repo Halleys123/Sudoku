@@ -8,3 +8,4 @@ profiling-results
 
 .vscode
 .DS_Store
+.tsbuildinfo

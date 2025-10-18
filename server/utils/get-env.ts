@@ -10,7 +10,7 @@ const envHandler: ProxyHandler<TEnv> = {
   get(target: TEnv, property: keyof TEnv) {
     return target[property];
   },
-  set(target: TEnv, property: keyof TEnv, value: any): boolean {
+  set(target: TEnv, property: keyof TEnv, value: string | number): boolean {
     const expectedType = typeof target[property];
 
     if (typeof value !== expectedType) {

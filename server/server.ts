@@ -4,5 +4,5 @@ import env from '@utils/get-env.js';
 import app from './app.js';
 
 app.listen(env.PORT, () => {
-  console.log('Listening on 3000');
+  console.log('Listening on', env.PORT);
 });
