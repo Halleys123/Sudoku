@@ -8,6 +8,7 @@ export default memo(function SudokuBox({
   selectedOption,
   notes,
   originalSudokuState,
+  lastAction,
 }) {
   function shouldHighlight(row, col, cellData) {
     // if burst mode then first priority is any selectedCell matching values
@@ -16,7 +17,11 @@ export default memo(function SudokuBox({
 
     // if not burst mode then just selectedCell matching values or same row and col
 
-    if (selectedCell[0] != -1 && selectedCell[1] != -1) {
+    if (
+      lastAction == 'cellClick' &&
+      selectedCell[0] != -1 &&
+      selectedCell[1] != -1
+    ) {
       return (
         row === selectedCell[0] ||
         col === selectedCell[1] ||
@@ -46,7 +51,7 @@ export default memo(function SudokuBox({
               notes={notes[rowIndex * 10 + cellIndex]}
               highlight={shouldHighlight(rowIndex, cellIndex, cellData)}
               onClick={() => onClick(rowIndex, cellIndex)}
-              selectedCell={selectedCell}
+              selectedCell={lastAction == 'cellClick' ? selectedCell : [-1, -1]}
               style={{
                 borderRight:
                   cellIndex % 3 === 2

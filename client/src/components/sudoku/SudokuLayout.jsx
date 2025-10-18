@@ -3,17 +3,16 @@ import SudokuInputs from './SudokuInputs';
 import { useState, useMemo } from 'react';
 import useMessage from '@/hooks/useMessage';
 import * as sudokuActions from './utils/sudokuActions.jsx';
-
 const originalSudokuState = [
-  [5, 3, 0, 0, 7, 0, 0, 0, 0],
-  [6, 0, 0, 1, 9, 5, 0, 0, 0],
-  [0, 9, 8, 0, 0, 0, 0, 6, 0],
-  [8, 0, 0, 0, 6, 0, 0, 0, 3],
-  [4, 0, 0, 8, 0, 3, 0, 0, 1],
-  [7, 0, 0, 0, 2, 0, 0, 0, 6],
-  [0, 6, 0, 0, 0, 0, 2, 8, 0],
-  [0, 0, 0, 4, 1, 9, 0, 0, 5],
-  [0, 0, 0, 0, 8, 0, 0, 7, 9],
+  [0, 0, 0, 2, 6, 0, 7, 0, 1],
+  [6, 8, 0, 0, 7, 0, 0, 9, 0],
+  [1, 9, 0, 0, 0, 4, 5, 0, 0],
+  [8, 2, 0, 1, 0, 0, 0, 4, 0],
+  [0, 0, 4, 6, 0, 2, 9, 0, 0],
+  [0, 5, 0, 0, 0, 3, 0, 2, 8],
+  [0, 0, 9, 3, 0, 0, 0, 7, 4],
+  [0, 4, 0, 0, 5, 0, 0, 3, 6],
+  [7, 0, 3, 0, 1, 8, 0, 0, 0],
 ];
 
 export default function SudokuLayout() {
@@ -21,6 +20,7 @@ export default function SudokuLayout() {
 
   const [inputMode, setInputMode] = useState('input'); // input | note | erase
   const [burstMode, setBurstMode] = useState(false);
+  const [lastAction, setLastAction] = useState('cellClick'); // cellClick | optionClick
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
@@ -84,7 +84,11 @@ export default function SudokuLayout() {
       if (row == prev[0] && col == prev[1]) return [-1, -1];
       else return [row, col];
     });
-    if (!burstMode) return;
+    setLastAction('cellClick');
+    if (!burstMode) {
+      setSelectedOption(null);
+      return;
+    }
 
     if (inputMode === 'input') inputValue(row, col, selectedOption);
     else if (inputMode === 'note') toggleNote(row, col, selectedOption);
@@ -92,12 +96,16 @@ export default function SudokuLayout() {
   }
 
   function handleOptionClick(value) {
+    setLastAction('optionClick');
+    setSelectedOption(value);
     if (burstMode) {
       if (options[value] <= 0) return;
-      setSelectedOption(value);
       if (inputMode === 'erase') setInputMode('input');
       return;
     }
+
+    if (selectedCell[0] < 0 || selectedCell[1] < 0) return;
+    if (selectedCell[0] >= 9 || selectedCell[1] >= 9) return;
 
     if (inputMode === 'input')
       inputValue(selectedCell[0], selectedCell[1], value);
@@ -135,6 +143,7 @@ export default function SudokuLayout() {
         selectedOption={selectedOption}
         burstMode={burstMode}
         notes={notes}
+        lastAction={lastAction}
       />
       <SudokuInputs
         burstMode={burstMode}
