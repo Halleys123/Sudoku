@@ -1,6 +1,13 @@
 import { memo } from 'react';
 import InputBox from './InputBox';
 import Toggle from '@components/Toggle.jsx';
+import GroupToggle from '@components/GroupToggle.jsx';
+
+const highlightOptions = [
+  { label: 'Row', value: 'row' },
+  { label: 'Column', value: 'column' },
+  { label: 'Same', value: 'sameValue' },
+];
 
 export default memo(function SudokuInputs({
   onClick,
@@ -12,6 +19,8 @@ export default memo(function SudokuInputs({
   selectedNumber,
   setSelectedNumber,
   eraseCell,
+  useHighlight,
+  setUseHighlight,
 }) {
   let options;
   if (burstMode) {
@@ -151,6 +160,28 @@ export default memo(function SudokuInputs({
               Erase
             </span>
           </button>
+        )}
+        {useHighlight && typeof setUseHighlight === 'function' && (
+          <div
+            style={{
+              display: !selectedNumber ? 'flex' : 'none',
+            }}
+            className='flex flex-col gap-2 pt-2'
+          >
+            <span className='text-sm font-semibold font-secondary text-neutral-600 uppercase tracking-wide'>
+              Highlights
+            </span>
+            <GroupToggle
+              options={highlightOptions}
+              activeMap={useHighlight}
+              onToggle={(value) => {
+                setUseHighlight((prev) => ({
+                  ...prev,
+                  [value]: !prev[value],
+                }));
+              }}
+            />
+          </div>
         )}
       </div>
     </div>

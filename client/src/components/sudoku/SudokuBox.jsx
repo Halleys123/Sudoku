@@ -9,6 +9,7 @@ export default memo(function SudokuBox({
   notes,
   originalSudokuState,
   lastAction,
+  useHighlight,
 }) {
   function shouldHighlight(row, col, cellData) {
     // if burst mode then first priority is any selectedCell matching values
@@ -16,25 +17,31 @@ export default memo(function SudokuBox({
     // if no selectedValue or option then nothing
 
     // if not burst mode then just selectedCell matching values or same row and col
+    let finalHighlight = false;
 
     if (
       lastAction == 'cellClick' &&
       selectedCell[0] != -1 &&
       selectedCell[1] != -1
     ) {
-      return (
-        row === selectedCell[0] ||
-        col === selectedCell[1] ||
-        (cellData == sudokuState[selectedCell[0]][selectedCell[1]] &&
-          cellData != 0)
-      );
+      if (useHighlight.row && row == selectedCell[0]) finalHighlight = true;
+      if (useHighlight.column && col == selectedCell[1]) finalHighlight = true;
     }
 
     if (selectedOption != null) {
-      return cellData == selectedOption && cellData != 0;
+      finalHighlight = cellData == selectedOption && cellData != 0;
+    } else if (
+      useHighlight.sameValue &&
+      selectedOption == null &&
+      selectedCell[0] != -1 &&
+      selectedCell[1] != -1 &&
+      cellData == sudokuState[selectedCell[0]][selectedCell[1]] &&
+      cellData != 0
+    ) {
+      finalHighlight = true;
     }
 
-    return false;
+    return finalHighlight;
   }
 
   return (

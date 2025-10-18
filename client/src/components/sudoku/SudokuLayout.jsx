@@ -3,6 +3,7 @@ import SudokuInputs from './SudokuInputs';
 import { useState, useMemo } from 'react';
 import useMessage from '@/hooks/useMessage';
 import * as sudokuActions from './utils/sudokuActions.jsx';
+
 const originalSudokuState = [
   [0, 0, 0, 2, 6, 0, 7, 0, 1],
   [6, 8, 0, 0, 7, 0, 0, 9, 0],
@@ -21,6 +22,11 @@ export default function SudokuLayout() {
   const [inputMode, setInputMode] = useState('input'); // input | note | erase
   const [burstMode, setBurstMode] = useState(false);
   const [lastAction, setLastAction] = useState('cellClick'); // cellClick | optionClick
+  const [useHighlight, setUseHighlight] = useState({
+    row: true,
+    column: true,
+    sameValue: true,
+  });
 
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedCell, setSelectedCell] = useState([1, 1]); // [row, col]
@@ -144,6 +150,7 @@ export default function SudokuLayout() {
         burstMode={burstMode}
         notes={notes}
         lastAction={lastAction}
+        useHighlight={useHighlight}
       />
       <SudokuInputs
         burstMode={burstMode}
@@ -156,6 +163,8 @@ export default function SudokuLayout() {
         setSelectedNumber={setSelectedOption}
         setSelectedCell={setSelectedCell}
         eraseCell={() => clearCell(selectedCell[0], selectedCell[1])}
+        setUseHighlight={setUseHighlight}
+        useHighlight={useHighlight}
       />
     </div>
   );
