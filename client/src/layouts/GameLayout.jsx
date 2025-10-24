@@ -7,6 +7,12 @@ export default function GameLayout() {
   const [navigationOpen, setNavigationOpen] = useState(true);
   const [navigationMinimized, setNavigationMinimized] = useState(false);
 
+  const navWidth = navigationOpen
+    ? navigationMinimized
+      ? '4rem'
+      : '16rem'
+    : '0px';
+
   return (
     <div className='relative font-primary bg-shade-50 dark:bg-shade-900 text-shade-900 dark:text-shade-50 h-screen w-screen overflow-hidden flex flex-row'>
       <div className='flex flex-1 flex-row gap-0 h-full'>
@@ -16,8 +22,15 @@ export default function GameLayout() {
           setOpen={setNavigationOpen}
           setMinimized={setNavigationMinimized}
         />
-        <div className='flex-1 flex flex-col h-full'>
-          <TopNavigation />
+        <div
+          className='flex flex-col h-full'
+          style={{
+            marginLeft: navWidth,
+            width: `calc(100% - ${navWidth})`,
+            transition: 'margin-left 0.3s ease-in-out, width 0.3s ease-in-out',
+          }}
+        >
+          <TopNavigation open={navigationOpen} setOpen={setNavigationOpen} />
           <main className='flex-1 overflow-y-auto'>
             <div className='min-h-full flex items-start justify-center p-4'>
               <Outlet />

@@ -4,7 +4,7 @@ export default function SideNavigation({
   minimized,
   open,
   setMinimized,
-  setOpen,
+  // setOpen,
 }) {
   return (
     <div
